@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00383838"
+    android:background="#2a2a2a"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -12,27 +12,24 @@
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="210dp"
+        android:background="#2a2a2a"
         android:visibility="visible" />
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/mapFragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="230dp" />
+
+    <fragment
+        android:id="@+id/controlFragmentContainer"
+        android:name="com.alexjreyes.autobot_client.ControlsFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="294dp" />
 
     <!--<WebView-->
     <!--android:id="@+id/mapView"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="300dp"-->
     <!--android:visibility="visible" />-->
-
-    <Button
-        android:id="@+id/viewToggleBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:onClick="toggleView"
-        android:text="MAP" />
 
 </LinearLayout>

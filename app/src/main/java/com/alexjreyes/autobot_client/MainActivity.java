@@ -3,9 +3,7 @@ package com.alexjreyes.autobot_client;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,7 +21,6 @@ import org.json.JSONObject;
 
 public class MainActivity extends FragmentActivity {
     private WebView webView;
-    private Button viewToggleBtn;
 
     // Map Fragment
     public static MapView mMapView;
@@ -41,8 +38,7 @@ public class MainActivity extends FragmentActivity {
         webView.loadUrl("http://autobot.alexjreyes.com/stream");
         webView.setVisibility(webView.VISIBLE);
 
-        viewToggleBtn = findViewById(R.id.viewToggleBtn);
-
+        showControls();
         showMap();
         setupPusher();
    }
@@ -85,27 +81,17 @@ public class MainActivity extends FragmentActivity {
         pusher.connect();
     }
 
-    // TODO: Toggle map/stream fragments
-    public void toggleView(View view) {
-//        String a = (mapView.getVisibility()==View.GONE)
-//                ? showMap()
-//                : showWebView();
-    }
-
-    public String showMap() {
-        MapFragment fragment = new MapFragment();
+    public void showMap() {
+        MapFragment mapFragment = new MapFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, fragment)
+                .add(R.id.mapFragmentContainer, mapFragment)
                 .commit();
-         return "a";
     }
 
-    public String showWebView() {
-        webView.setVisibility(View.VISIBLE);;
-        viewToggleBtn.setText("MAP");
-        return "a";
+    public void showControls() {
+        ControlsFragment controlFragment = new ControlsFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.controlFragmentContainer, controlFragment)
+                .commit();
     }
-
-
-
 }
