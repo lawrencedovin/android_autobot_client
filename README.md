@@ -10,6 +10,8 @@ Java 4 final project
 
 You'll need to acquire API keys for two different services. One for [Pusher API](https://pusher.com) and [Google Maps Android SDK API](https://cloud.google.com/maps-platform/maps/?apis=maps).
 
+Contact me for the Pusher API key.
+
 Add the keys into the `gradle.properties` file found in the `.gradle` directory:
 
 
