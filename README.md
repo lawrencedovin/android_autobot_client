@@ -1,3 +1,5 @@
+<img src="https://github.com/alexako/android_autobot_client/blob/develop/app/src/main/res/mipmap-xxxhdpi/autobot_icon.png" width="200" />
+
 # AutoBot Android Client
 
 Java 4 final project
