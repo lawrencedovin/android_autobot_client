@@ -43,9 +43,10 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
-                googleMap.getUiSettings().setScrollGesturesEnabled(false);
+                googleMap.getUiSettings().setAllGesturesEnabled(false);
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 googleMap.getUiSettings().setZoomGesturesEnabled(true);
+                googleMap.getUiSettings().setCompassEnabled(true);
 
                 BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.mipmap.autobot_icon);
                 Bitmap b = bitmapdraw.getBitmap();
