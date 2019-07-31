@@ -7,10 +7,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,25 +23,33 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 //import com.google.android.gms.common.api.Response;
 
 public class ControlsFragment extends Fragment implements SensorEventListener {
-    SensorManager gyroSensorManager, accelerometerSensorManager;
-    Sensor gyroSensor, accelerometerSensor;
-    int sensorType;
-    ImageView rightArrow,leftArrow,upArrow,downArrow;
-    String URL = "http://autobot.alexjreyes.com/";
+    private SensorManager accelerometerSensorManager;
+    private Sensor accelerometerSensor;
+    private int sensorType;
+    private ImageView rightArrow,leftArrow,upArrow,downArrow;
+    private TextView accelText;
+    private String URL = "http://autobot.alexjreyes.com/";
+    private long lastExecution = new Date().getTime();
+    private Button toggleSensorsBtn;
+    private Boolean sensorDeactivated;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gyroSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        gyroSensor = gyroSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        gyroSensorManager.registerListener(this, gyroSensor, gyroSensorManager.SENSOR_DELAY_NORMAL);
 
         accelerometerSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = accelerometerSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        accelerometerSensorManager.registerListener(this, accelerometerSensor, accelerometerSensorManager.SENSOR_DELAY_NORMAL);;
+        accelerometerSensorManager.unregisterListener(this);
+        sensorDeactivated = true;
     }
 
     @Override
@@ -51,6 +61,14 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
         leftArrow = view.findViewById(R.id.leftClick);
         downArrow = view.findViewById(R.id.reverseClick);
         upArrow = view.findViewById(R.id.forwardClick);
+
+        accelText = view.findViewById(R.id.accel_sensor);
+        toggleSensorsBtn = view.findViewById(R.id.toggleSensorsBtn);
+
+        if(accelerometerSensor == null) {
+            Toast.makeText(getActivity(), "Device has no Accelerometer", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
 
         rightArrow.setOnClickListener(
                 new View.OnClickListener() {
@@ -84,93 +102,106 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
                     }
                 }
         );
+
+        toggleSensorsBtn.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(sensorDeactivated == true){
+                            onSensorsDeactivated(v);
+                            sensorDeactivated = false;
+                        } else {
+                            onSensorsActivated(v);
+                            sensorDeactivated = true;
+                        }
+                    }
+                }
+        );
         return view;
     }
 
+    public void onSensorsActivated(View view) {
+        accelerometerSensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        Toast.makeText(getActivity(),"Sensors Activated",Toast.LENGTH_SHORT).show();
+        toggleSensorsBtn.setText("Deactivate Sensors");
+    }
+    public void onSensorsDeactivated(View view) {
+        accelerometerSensorManager.unregisterListener(this);
+        Toast.makeText(getActivity(),"Sensors Deactivated",Toast.LENGTH_SHORT).show();
+        toggleSensorsBtn.setText("Activate Sensors");
+    }
+
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-//        sensorType = sensorEvent.sensor.getType();
-//        switch (sensorType) {
-////            case Sensor.TYPE_GYROSCOPE:
-////                if(sensorEvent.values[2] > 0.5f) { //left
-////                    getRequest("gyro", "left");
-////
-////                } else if(sensorEvent.values[2] < -0.5f) { // right
-////                    getRequest("gyro", "right");
-////                }
-////                break;
-//            case Sensor.TYPE_ACCELEROMETER:
-//                float x = sensorEvent.values[0];
-//                float y = sensorEvent.values[1];
-//                float z = sensorEvent.values[2];
-//                xCoordinate.setText("X Coordinate: "+ x);
-//                yCoordinate.setText("Y Coordinate: " + y);
-//                zCoordinate.setText("Z Coordinate: " + z);
-//                if(y>0) { //reverse
-//                    getRequest("accel", "reverse");
-//                } else { //forward
-//                    getRequest("accel", "forward");
-//                }
-//                break;
-//            default:
-//                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-//                break;
-//        }
+        sensorType = sensorEvent.sensor.getType();
+        if(new Date().getTime() - lastExecution < 750){
+            return ;
+        }
+
+        switch (sensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                float x = sensorEvent.values[0];
+                float y = sensorEvent.values[1];
+
+                if(x<0.0f && x>-2.0f && y>3.0f) { //reverse
+                    getSensorRequest("accel", "reverse");
+                    lastExecution = new Date().getTime();
+                } else if(x<0.0f && x>-2.0f && y>-3.0f && y<-1.5f) { //forward
+                    getSensorRequest("accel", "forward");
+                    lastExecution = new Date().getTime();
+                } else if(y<0.0f && y>-2.0f && x>3.0f){
+                    getSensorRequest("accel", "left");
+                    lastExecution = new Date().getTime();
+                } else if(y<0.0f && y>-2.0f && x<-3.0f && x<-1.5f){
+                    getSensorRequest("accel", "right");
+                    lastExecution = new Date().getTime();
+                } else if(y>-1.0 && y<1.0 && x>-1.0 && x<1.0){
+                    lastExecution = new Date().getTime();
+                }
+                break;
+            default:
+                break;
+        }
+
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
 
-    //    public void getRequest(final String type, String direction) {
-//        if(type == "gyro"){
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL + direction, new Response.Listener<String>() {
-//
-//            @Override
-//            public void onResponse(String response) {
-//                gyroText.setText("Gyro Tilt: " + response);
-//            }
-//        },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        gyroText.setText("Gyro Error: " + error);
-//                    }
-//                });
-//
-//        RequestQueue rQueue = Volley.newRequestQueue(MainActivity.this);
-//        rQueue.add(stringRequest);
-//    }
-//        else if(type == "accel"){
-//            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL + direction, new Response.Listener<String>() {
-//
-//                @Override
-//                public void onResponse(String response) {
-//                    accelText.setText("Accel Tilt: " + response);
-//                }
-//            },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            accelText.setText("Accel Error: " + error);
-//                        }
-//                    });
-//            RequestQueue rQueue = Volley.newRequestQueue(MainActivity.this);
-//            rQueue.add(stringRequest);
-//        }
-//    }
+    public void getSensorRequest(final String type, String direction) {
+        if(type == "accel"){
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL + direction, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    accelText.setText("Movement Response: " + response);
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            accelText.setText("Movement Error: " + error);
+                        }
+                    });
+            RequestQueue rQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+            rQueue.add(stringRequest);
+        }
+    }
+
     public void getRequest(String direction) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL + direction, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getActivity(),"Movement: " + response,Toast.LENGTH_SHORT).show();
+                accelText.setText("Movement Response: " + response);
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),"Movement: " + error,Toast.LENGTH_SHORT).show();
+                        accelText.setText("Movement Error: " + error);
                     }
                 });
 
