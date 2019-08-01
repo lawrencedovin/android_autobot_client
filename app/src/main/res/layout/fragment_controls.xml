@@ -17,13 +17,13 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/up_arrow" />
+        android:layout_marginTop="40dp"
+        android:background="@drawable/up_arrow" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal">
 
@@ -31,15 +31,15 @@
             android:id="@+id/leftClick"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginRight="32dp"
-            android:src="@drawable/left_arrow" />
+            android:layout_marginRight="40dp"
+            android:background="@drawable/left_arrow" />
 
         <ImageView
             android:id="@+id/rightClick"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginLeft="32dp"
-            android:src="@drawable/right_arrow" />
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/right_arrow" />
 
     </LinearLayout>
 
@@ -48,46 +48,32 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/down_arrow" />
-
-    <TextView
-        android:id="@+id/accelText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center_horizontal"
-        />
-
-    <TextView
-        android:id="@+id/accel_sensor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center_horizontal"
-        />
+        android:layout_marginTop="40dp"
+        android:background="@drawable/down_arrow" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:orientation="horizontal"
+            android:layout_marginTop="56dp"
             android:layout_gravity="center_horizontal">
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/autoDriveBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="8dp"
-                android:text="Auto Drive" />
+                android:layout_marginRight="48dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/car"
+                android:padding="12dp"
+                android:background="@drawable/car_icon"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="32dp"
+                android:layout_marginLeft="48dp"
                 android:layout_gravity="center_horizontal">
 
                 <TextView

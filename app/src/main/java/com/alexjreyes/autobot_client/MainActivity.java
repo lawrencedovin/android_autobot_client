@@ -7,6 +7,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,7 +33,7 @@ public class MainActivity extends FragmentActivity {
     public static GoogleMap googleMap;
     public static MarkerOptions markerOptions;
     public static Marker marker;
-    public static Button toggleViewBtn;
+    public static ImageButton toggleViewBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +55,11 @@ public class MainActivity extends FragmentActivity {
                 if(webView.getVisibility() == View.VISIBLE){
                     webView.setVisibility(View.GONE);
                     mapFragmentContainer.setVisibility(View.VISIBLE);
+                    toggleViewBtn.setImageResource(R.drawable.youtube);
                 } else {
                     webView.setVisibility(View.VISIBLE);
                     mapFragmentContainer.setVisibility(View.GONE);
+                    toggleViewBtn.setImageResource(R.drawable.googlemaps);
                 }
             }
         });

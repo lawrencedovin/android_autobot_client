@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
     private TextView accelText;
     private String URL = "http://autobot.alexjreyes.com/";
     private long lastExecution = new Date().getTime();
-    private Button autoDriveBtn;
+    private ImageButton autoDriveBtn;
     private Boolean sensorDeactivated;
     private LabeledSwitch toggleSensorsSwitch;
 
@@ -66,7 +67,7 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
         downArrow = view.findViewById(R.id.reverseClick);
         upArrow = view.findViewById(R.id.forwardClick);
 
-        accelText = view.findViewById(R.id.accel_sensor);
+//        accelText = view.findViewById(R.id.accel_sensor);
         autoDriveBtn = view.findViewById(R.id.autoDriveBtn);
 
         toggleSensorsSwitch = view.findViewById(R.id.toggleSensorsSwitch);
@@ -229,14 +230,14 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
             @Override
             public void onResponse(String response) {
                 //accelText.setText("Autodrive Activated: " + response);
-                Toast.makeText(getActivity(),"Autodrive Activated: " + response,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Auto Drive Activated: " + response,Toast.LENGTH_SHORT).show();
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 //                        accelText.setText("Autodrive Error: " + error);
-                        Toast.makeText(getActivity(),"Autodrive Error: " + error,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"Auto Drive Error: " + error,Toast.LENGTH_SHORT).show();
                     }
                 });
 
