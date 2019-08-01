@@ -23,6 +23,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.angads25.toggle.interfaces.OnToggledListener;
+import com.github.angads25.toggle.model.ToggleableView;
+import com.github.angads25.toggle.widget.LabeledSwitch;
 
 import java.time.LocalTime;
 import java.util.Calendar;
@@ -39,8 +42,9 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
     private TextView accelText;
     private String URL = "http://autobot.alexjreyes.com/";
     private long lastExecution = new Date().getTime();
-    private Button toggleSensorsBtn;
+    private Button autoDriveBtn;
     private Boolean sensorDeactivated;
+    private LabeledSwitch toggleSensorsSwitch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +67,9 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
         upArrow = view.findViewById(R.id.forwardClick);
 
         accelText = view.findViewById(R.id.accel_sensor);
-        toggleSensorsBtn = view.findViewById(R.id.toggleSensorsBtn);
+        autoDriveBtn = view.findViewById(R.id.autoDriveBtn);
+
+        toggleSensorsSwitch = view.findViewById(R.id.toggleSensorsSwitch);
 
         if(accelerometerSensor == null) {
             Toast.makeText(getActivity(), "Device has no Accelerometer", Toast.LENGTH_SHORT).show();
@@ -103,32 +109,35 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
                 }
         );
 
-        toggleSensorsBtn.setOnClickListener(
+        autoDriveBtn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(sensorDeactivated == true){
-                            onSensorsDeactivated(v);
-                            sensorDeactivated = false;
-                        } else {
-                            onSensorsActivated(v);
-                            sensorDeactivated = true;
-                        }
+                        autoDrive();
                     }
                 }
         );
+
+        toggleSensorsSwitch.setOnToggledListener(new OnToggledListener() {
+            @Override
+            public void onSwitched(ToggleableView toggleableView, boolean isOn) {
+                if(isOn == true){
+                    onSensorsActivated();
+                } else {
+                    onSensorsDeactivated();
+                }
+            }
+        });
         return view;
     }
 
-    public void onSensorsActivated(View view) {
+    public void onSensorsActivated() {
         accelerometerSensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
         Toast.makeText(getActivity(),"Sensors Activated",Toast.LENGTH_SHORT).show();
-        toggleSensorsBtn.setText("Deactivate Sensors");
     }
-    public void onSensorsDeactivated(View view) {
+    public void onSensorsDeactivated() {
         accelerometerSensorManager.unregisterListener(this);
         Toast.makeText(getActivity(),"Sensors Deactivated",Toast.LENGTH_SHORT).show();
-        toggleSensorsBtn.setText("Activate Sensors");
     }
 
 
@@ -176,13 +185,15 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
 
                 @Override
                 public void onResponse(String response) {
-                    accelText.setText("Movement Response: " + response);
+//                    accelText.setText("Movement Response: " + response);
+                    Toast.makeText(getActivity(),"Movement Response: " + response,Toast.LENGTH_SHORT).show();
                 }
             },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            accelText.setText("Movement Error: " + error);
+//                            accelText.setText("Movement Error: " + error);
+                            Toast.makeText(getActivity(),"Movement Error: " + error,Toast.LENGTH_SHORT).show();
                         }
                     });
             RequestQueue rQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
@@ -195,19 +206,42 @@ public class ControlsFragment extends Fragment implements SensorEventListener {
 
             @Override
             public void onResponse(String response) {
-                accelText.setText("Movement Response: " + response);
+//                accelText.setText("Movement Response: " + response);
+                Toast.makeText(getActivity(),"Movement Response: " + response,Toast.LENGTH_SHORT).show();
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        accelText.setText("Movement Error: " + error);
+//                        accelText.setText("Movement Error: " + error);
+                        Toast.makeText(getActivity(),"Movement Error: " + error,Toast.LENGTH_SHORT).show();
                     }
                 });
 
         RequestQueue rQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         rQueue.add(stringRequest);
 
+    }
+
+    public void autoDrive() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL + "/activate", new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                //accelText.setText("Autodrive Activated: " + response);
+                Toast.makeText(getActivity(),"Autodrive Activated: " + response,Toast.LENGTH_SHORT).show();
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        accelText.setText("Autodrive Error: " + error);
+                        Toast.makeText(getActivity(),"Autodrive Error: " + error,Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        RequestQueue rQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        rQueue.add(stringRequest);
 
     }
 }

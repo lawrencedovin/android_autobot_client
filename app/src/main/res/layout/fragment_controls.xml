@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/mainBlue"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.alexjreyes.autobot_client.ControlsFragment">
 
     <LinearLayout
@@ -65,12 +67,48 @@
         android:layout_gravity="center_horizontal"
         />
 
-    <Button
-        android:id="@+id/toggleSensorsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Activate Sensors" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+
+            <Button
+                android:id="@+id/autoDriveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="8dp"
+                android:text="Auto Drive" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="32dp"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#fff"
+                    android:text="Sensors: "/>
+
+            <com.github.angads25.toggle.widget.LabeledSwitch
+                android:id="@+id/toggleSensorsSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                app:on="false"
+                app:textOn="ON"
+                app:textOff="OFF"
+                app:colorOn="@color/secondaryBlue"
+                app:colorBorder="@color/secondaryBlue"/>
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
